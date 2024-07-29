@@ -1,23 +1,32 @@
-import {Box, Stack, Typography} from '@mui/material';
+"use client"
 
-const item = [
-  'tomato',
-  'potato',
-  'onion',
-  'garlic',
-  'ginger',
-  'turmeric',
-  'cumin',
-  'coriander',
-  'cinnamon',
-  'cloves',
-  'cardamom',
-  'black pepper',
-  'chili powder',
-  'paprika'
-]
+import { firestore } from '@/firebase';
+import {Box, Stack, Typography, Button} from '@mui/material';
+import { Firestore } from 'firebase/firestore';
+import { getDocs, collection } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
+  const [pantry, setPantry] = useState([]);
+
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
+
+  useEffect(() => {
+    const updatePantry = async () =>  {
+      const snapshot = collection(firestore, 'pantry');
+      const docs = await getDocs(snapshot);
+      const pantryList = [];
+      docs.forEach(doc => {
+        pantryList.push(doc.id);
+      });
+      console.log(pantryList);
+      setPantry(pantryList);
+    }
+    updatePantry();
+  }, [])
+
   return (
     <Box
       width = "100vw"
@@ -26,7 +35,9 @@ export default function Home() {
       flexDirection = {'column'}
       justifyContent = {'center'}
       alignItems = {'center'}
+      gap = {2}
     >
+      <Button variant="contained">Add</Button>
       <Box border={'1px solid #333'}>
       <Box width="800px" height="100px" bgcolor={'#ADD8E6'} display={'flex'} justifyContent={'center'} alignItems={'center'} border={'1px solid #333'}>
         <Typography variant={'h2'} color={'#333'} textAlign={'center'} >
@@ -34,7 +45,7 @@ export default function Home() {
         </Typography>
       </Box>
       <Stack width = "800px" height = "300px" spacing= {2} overflow= {'auto'}>
-        {item.map((i) => (
+        {pantry.map((i) => (
           <Box
             key = {i}
             bgcolor = {'#f0f0f0'}
@@ -43,7 +54,7 @@ export default function Home() {
             justifyContent = {'center'}
             alignItems = {'center'}
             width = {'100%'}
-            height = {'300px'}
+            minHeight = {'150px'}
           >
             <Typography variant= {'h3'} color = {'#333'} textAlign = {'center'}>
               {
