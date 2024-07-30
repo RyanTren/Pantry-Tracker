@@ -4,7 +4,21 @@ import { Box, Stack, Typography, Button, Modal, TextField } from "@mui/material"
 import { firestore } from "@/firebase"
 import { collection, getDocs, query, doc, setDoc, deleteDoc, getDoc, addDoc } from "firebase/firestore"
 import { useEffect, useState } from "react"
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+// import './page.css'
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+  }
+})
 
 const style = {
   position: 'absolute',
@@ -13,7 +27,7 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  borderRadius: 2,
   boxShadow: 24,
   p: 4,
   display: 'flex',
@@ -23,15 +37,13 @@ const style = {
 
 export default function Home() {
   const [pantry, setPantry] = useState([]);
-
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
-
   const [itemName, setItemName] = useState('')
-
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPantry, setFilteredPantry] = useState([]);
+  const [themeMode, setThemeMode] = useState('light');
 
   const updatePantry = async () =>  {
     const snapshot = collection(firestore, 'pantry');
@@ -83,7 +95,22 @@ export default function Home() {
     setFilteredPantry(filteredItems);
   };
 
+  const toggleTheme = () => {
+    setThemeMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
+  }
+
   return (
+    <ThemeProvider theme={themeMode === 'light' ? lightTheme : darkTheme}>
+    <CssBaseline />
+
+    <Button onClick={toggleTheme} 
+    sx={{
+      margin: '10px',
+      position: 'absolute',
+      right: '0',
+    }}
+    >🌙</Button>
+
     <Box
       width = "100vw"
       height = "100vh"
@@ -114,6 +141,7 @@ export default function Home() {
             />
             <Button 
               variant="outlined"
+              color="success"
               onClick={() => {
               addItem(itemName)
               setItemName('')
@@ -123,48 +151,54 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
-      <Button variant="contained" onClick={handleOpen}>Add</Button>
-
-      <TextField 
-        label="Search Items" 
-        variant="outlined" 
-        width="600px" 
-        value={searchQuery} 
-        onChange={(e) => handleSearch(e.target.value)} 
-      />
-
-      <Box border={'1px solid #333'}>
-        <Box width="800px" height="100px" bgcolor={'#ADD8E6'} display={'flex'} justifyContent={'center'} alignItems={'center'} border={'1px solid #333'}>
-          <Typography variant={'h2'} color={'#333'} textAlign={'center'} >
+      
+      <Box>
+        <Box width="950px" height="100px" bgcolor={'#4CE484'} display={'flex'} justifyContent={'center'} alignItems={'center'} borderRadius={3} marginBottom={2}>
+          <Typography variant={'h2'} color={'black'} textAlign={'center'} >
             Pantry Items
           </Typography>
         </Box>
 
-        <Stack width = "800px" height = "300px" spacing= {2} overflow= {'auto'}>
+        <Button variant="outlined" color="success" onClick={handleOpen}>Add Items</Button>
+
+        <TextField 
+          label="Search Items" 
+          variant="outlined" 
+          width="600px" 
+          value={searchQuery} 
+          onChange={(e) => handleSearch(e.target.value)} 
+          sx={{
+            position: 'absolute',
+            right: '31vw',
+          }}
+        />
+
+        <Stack width = "950px" height = "300px" spacing= {0.5} overflow= {'auto'} marginTop={5}>
           {pantry.map(({name, count}) => (
               <Box
                 key = {name}
-                bgcolor = {'#f0f0f0'}
+                bgcolor = {'#FFFFFF'}
                 color = {'black'}
                 display = {'flex'}
                 justifyContent = {'space-between'}
                 paddingX={2}
                 alignItems = {'center'}
                 width = {'100%'}
-                minHeight = {'150px'}
+                minHeight = {'85px'}
+                borderRadius={3}
               >
-                <Typography variant= {'h3'} color = {'#333'} textAlign = {'center'}>
+                <Typography variant= {'h5'} color = {'#333'} textAlign = {'center'}>
                   {
                     // capitalize the first letter of the item
                     name.charAt(0).toUpperCase() + name.slice(1)
                   }
                 </Typography>
 
-                <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
+                <Typography variant={'h7'} color={'#333'} textAlign={'center'}>
                   Quantity: {count}
                 </Typography>
 
-                <Button variant="contained" onClick={() => removeItem(name)}>
+                <Button variant="outlined" color="error" onClick={() => removeItem(name)}>
                   Remove
                 </Button>
               </Box>
@@ -173,5 +207,6 @@ export default function Home() {
         </Stack>
       </Box>
     </Box>
+  </ThemeProvider>
   );
 }
