@@ -30,6 +30,9 @@ export default function Home() {
 
   const [itemName, setItemName] = useState('')
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredPantry, setFilteredPantry] = useState([]);
+
   const updatePantry = async () =>  {
     const snapshot = collection(firestore, 'pantry');
     const docs = await getDocs(snapshot);
@@ -74,6 +77,12 @@ export default function Home() {
     }
   }
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filteredItems = pantry.filter(item => item.name.toLowerCase().includes(query.toLowerCase()));
+    setFilteredPantry(filteredItems);
+  };
+
   return (
     <Box
       width = "100vw"
@@ -115,6 +124,14 @@ export default function Home() {
         </Box>
       </Modal>
       <Button variant="contained" onClick={handleOpen}>Add</Button>
+
+      <TextField 
+        label="Search Items" 
+        variant="outlined" 
+        width="600px" 
+        value={searchQuery} 
+        onChange={(e) => handleSearch(e.target.value)} 
+      />
 
       <Box border={'1px solid #333'}>
         <Box width="800px" height="100px" bgcolor={'#ADD8E6'} display={'flex'} justifyContent={'center'} alignItems={'center'} border={'1px solid #333'}>
