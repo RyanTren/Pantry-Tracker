@@ -6,7 +6,6 @@ import { collection, getDocs, query, doc, setDoc, deleteDoc, getDoc, addDoc } fr
 import { useEffect, useState } from "react"
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-// import './page.css'
 
 const darkTheme = createTheme({
   palette: {
@@ -154,8 +153,8 @@ export default function Home() {
       
       <Box>
         <Box width="950px" height="100px" bgcolor={'#4CE484'} display={'flex'} justifyContent={'center'} alignItems={'center'} borderRadius={3} marginBottom={2}>
-          <Typography variant={'h2'} color={'black'} textAlign={'center'} >
-            Pantry Items
+          <Typography variant={'h2'} color={'white'} textAlign={'center'} >
+            Pantry Tracker
           </Typography>
         </Box>
 
@@ -168,8 +167,8 @@ export default function Home() {
           value={searchQuery} 
           onChange={(e) => handleSearch(e.target.value)} 
           sx={{
-            position: 'absolute',
-            right: '31vw',
+            position: 'relative',
+            left: '65%',
           }}
         />
 
@@ -186,6 +185,7 @@ export default function Home() {
                 width = {'100%'}
                 minHeight = {'85px'}
                 borderRadius={3}
+                border={'1px solid #333'}
               >
                 <Typography variant= {'h5'} color = {'#333'} textAlign = {'center'}>
                   {
@@ -207,6 +207,27 @@ export default function Home() {
         </Stack>
       </Box>
     </Box>
+
+    <footer>
+      <Box
+        width = "100vw"
+        height = "50px"
+        bgcolor = {'#4CE484'}
+        display = {'flex'}
+        justifyContent = {'center'}
+        alignItems = {'center'}
+        borderRadius = {3}
+        marginTop = {2}
+      >
+        <Typography variant = {'h7'} color = {'white'} textAlign = {'center'}>
+          <a href="https://ryantren.github.io/portfolio-website/" target="_blank" rel="noopener noreferrer" 
+          sx={{
+            style: 'text-decoration: none',
+          }}
+          >Ryan Tran 2024©</a>
+        </Typography>
+      </Box>
+    </footer>
   </ThemeProvider>
   );
 }
