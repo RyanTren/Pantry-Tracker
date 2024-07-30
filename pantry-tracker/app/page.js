@@ -1,10 +1,9 @@
-"use client"
+"use client";
 
-import {Box, Stack, Typography, Button, Modal, TextField} from '@mui/material';
-import { firestore } from '@/firebase';
-// import { Firestore } from 'firebase/firestore';
-import { doc, getDocs, setDoc, collection, query, deleteDoc } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { Box, Stack, Typography, Button, Modal, TextField } from "@mui/material"
+import { firestore } from "@/firebase"
+import { collection, getDocs, query, doc, setDoc, deleteDoc, getDoc, addDoc } from "firebase/firestore"
+import { useEffect, useState } from "react"
 
 
 const style = {
@@ -50,7 +49,7 @@ export default function Home() {
     const docRef = doc(collection(firestore, 'pantry'), item)
     await setDoc(docRef, {})
     updatePantry()
-  }
+  };
 
   const removeItem = async (item) => {
     const docRef = doc(collection(firestore, 'pantry'), item)
@@ -68,31 +67,37 @@ export default function Home() {
       alignItems = {'center'}
       gap = {2}
     >
-
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx = {style}>
+        <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Add Item
           </Typography>
-          <Stack width = "100%" direction = {'row'} spacing = {2}>
-            <TextField id="outlined-basic" label="Item" variant="outlined" fullWidth value={itemName} onChange={(e) => setItemName(e.target.value)}/>
-            <Button variant="outlined">Search</Button>
+          <Stack direction={'row'} spacing={2}>
+            <TextField 
+              id="outlined-basic" 
+              label="Item" 
+              variant="outlined" 
+              fullWidth 
+              value={itemName} 
+              onChange={(e) => setItemName(e.target.value)}
+            />
+            <Button 
+              variant="outlined"
+              onClick={() => {
+              addItem(itemName)
+              setItemName('')
+              handleClose()
+            }}
+            >Add</Button>
           </Stack>
         </Box>
       </Modal>
-      <Button variant="contained"
-        onClick={() => {
-          addItem(itemName)
-          setItemName('')
-          handleClose()
-        }}
-
-      >Add</Button>
+      <Button variant="contained" onClick={handleOpen}>Add</Button>
 
       <Box border={'1px solid #333'}>
         <Box width="800px" height="100px" bgcolor={'#ADD8E6'} display={'flex'} justifyContent={'center'} alignItems={'center'} border={'1px solid #333'}>
